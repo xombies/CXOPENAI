@@ -462,8 +462,10 @@ export function Layout({ children }: { children: ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        <script type="module" src="/src/__create/dev-error-overlay.js"></script>
-        <link rel="icon" href="/src/__create/favicon.png" />
+        {import.meta.env.DEV ? (
+          <script type="module" src="/src/__create/dev-error-overlay.js" />
+        ) : null}
+        <link rel="icon" href="/favicon.png" />
         {LoadFontsSSR ? <LoadFontsSSR /> : null}
       </head>
       <body>

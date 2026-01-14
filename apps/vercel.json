@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/ssr.js": {
-      "includeFiles": "build/server/**"
+      "includeFiles": "web/build/server/**"
     }
   },
   "routes": [
@@ -9,3 +9,4 @@
     { "src": "/(.*)", "dest": "/api/ssr" }
   ]
 }
+

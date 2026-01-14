@@ -1,0 +1,13 @@
+{
+  "name": "cxopenai-apps",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm --prefix web ci --no-audit --no-fund",
+    "vercel-build": "npm --prefix web run build && node ./scripts/sync-web-public-to-root.js",
+    "build": "npm run vercel-build"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.18.1"
+  }
+}
+

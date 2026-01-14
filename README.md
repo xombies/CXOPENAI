@@ -24,7 +24,10 @@ npm run start
 ## Deploy (Vercel)
 
 - Import the repo in Vercel.
-- Set the project **Root Directory** to `apps/web`.
+- Set the project **Root Directory** to either:
+  - `apps/web` (recommended), or
+  - `apps` (supported; uses `apps/vercel.json` + `apps/package.json` to deploy the web app)
+- Leave **Output Directory** empty.
 - Configure any required env vars (search for `process.env.*` usage in `apps/web`).
 
 ## License

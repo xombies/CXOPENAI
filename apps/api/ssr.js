@@ -12,8 +12,14 @@ export default async function handler(req, res) {
     return cachedHandler(req, res);
   } catch (error) {
     console.error('[api/ssr] Function invocation failed', error);
+    const host = req?.headers?.host ?? 'localhost';
+    const proto = req?.headers?.['x-forwarded-proto'] ?? 'http';
+    const url = new URL(req.url ?? '/', `${proto}://${host}`);
+    const debug = url.searchParams.has('__debug');
+
     res.statusCode = 500;
     res.setHeader('content-type', 'text/plain; charset=utf-8');
-    res.end('Internal Server Error');
+    res.setHeader('cache-control', 'no-store');
+    res.end(debug ? String(error?.stack ?? error) : 'Internal Server Error');
   }
 }

@@ -1,26 +1,12 @@
-const { handle } = require('@hono/node-server/vercel');
+import { handle } from '@hono/node-server/vercel';
 
 let cachedHandler;
 
-function unwrapServerApp(mod) {
-  return mod?.default?.default ?? mod?.default ?? mod;
-}
-
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   try {
     if (!cachedHandler) {
-      const entry = '../web/build/server/index.js';
-
-      let serverApp;
-      try {
-        const required = require(entry);
-        serverApp = unwrapServerApp(required);
-      } catch {
-        const imported = await import(entry);
-        serverApp = unwrapServerApp(imported);
-      }
-
-      cachedHandler = handle(serverApp);
+      const mod = await import('../web/build/server/index.js');
+      cachedHandler = handle(mod.default);
     }
 
     return cachedHandler(req, res);
@@ -30,4 +16,4 @@ module.exports = async function handler(req, res) {
     res.setHeader('content-type', 'text/plain; charset=utf-8');
     res.end('Internal Server Error');
   }
-};
+}

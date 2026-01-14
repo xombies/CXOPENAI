@@ -1,6 +1,7 @@
 {
   "name": "cxopenai-apps",
   "private": true,
+  "type": "module",
   "scripts": {
     "postinstall": "npm --prefix web ci --no-audit --no-fund",
     "vercel-build": "npm --prefix web run build && node ./scripts/sync-web-public-to-root.js",
@@ -10,4 +11,3 @@
     "@hono/node-server": "^1.18.1"
   }
 }
-

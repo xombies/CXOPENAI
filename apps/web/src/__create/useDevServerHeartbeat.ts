@@ -1,30 +1,38 @@
 'use client';
 
-import * as idleTimer from 'react-idle-timer';
+import { useEffect, useRef } from 'react';
 
 export function useDevServerHeartbeat() {
-  const useIdleTimer =
-    (idleTimer as unknown as { useIdleTimer?: unknown }).useIdleTimer ??
-    (idleTimer as unknown as { default?: { useIdleTimer?: unknown } }).default?.useIdleTimer;
-
-  if (typeof useIdleTimer !== 'function') {
+  if (import.meta.env.PROD) {
     return;
   }
 
-  useIdleTimer({
-    throttle: 60_000 * 3,
-    timeout: 60_000,
-    onAction: () => {
-      // HACK: at time of writing, we run the dev server on a proxy url that
-      // when requested, ensures that the dev server's life is extended. If
-      // the user is using a page or is active in it in the app, but when the
-      // user has popped out their preview, they no longer can rely on the
-      // app to do this. This hook ensures it stays alive.
+  const lastPingAtMs = useRef(0);
+
+  useEffect(() => {
+    const throttleMs = 3 * 60_000;
+
+    const maybePing = () => {
+      const now = Date.now();
+      if (now - lastPingAtMs.current < throttleMs) {
+        return;
+      }
+      lastPingAtMs.current = now;
+
       fetch('/', {
         method: 'GET',
-      }).catch((error) => {
-        // this is a no-op, we just want to keep the dev server alive
-      });
-    },
-  });
+      }).catch(() => {});
+    };
+
+    const events = ['pointerdown', 'keydown', 'mousemove', 'scroll', 'touchstart'] as const;
+    for (const event of events) {
+      window.addEventListener(event, maybePing, { passive: true });
+    }
+
+    return () => {
+      for (const event of events) {
+        window.removeEventListener(event, maybePing);
+      }
+    };
+  }, []);
 }

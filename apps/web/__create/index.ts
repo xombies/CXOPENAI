@@ -4,7 +4,6 @@ import { skipCSRFCheck } from '@auth/core';
 import Credentials from '@auth/core/providers/credentials';
 import { authHandler, initAuthConfig } from '@hono/auth-js';
 import { Pool, neonConfig } from '@neondatabase/serverless';
-import { hash, verify } from 'argon2';
 import { Hono } from 'hono';
 import { contextStorage } from 'hono/context-storage';
 import { cors } from 'hono/cors';
@@ -21,6 +20,16 @@ import { isAuthAction } from './is-auth-action';
 import { API_BASENAME, api } from './route-builder';
 import * as build from 'virtual:react-router/server-build';
 neonConfig.webSocketConstructor = ws;
+
+async function argon2Verify(hash: string, plain: string): Promise<boolean> {
+  const { verify } = await import('argon2');
+  return verify(hash, plain);
+}
+
+async function argon2Hash(plain: string): Promise<string> {
+  const { hash } = await import('argon2');
+  return hash(plain);
+}
 
 const als = new AsyncLocalStorage<{ requestId: string }>();
 
@@ -163,7 +172,7 @@ if (process.env.AUTH_SECRET) {
               return null;
             }
 
-            const isValid = await verify(accountPassword, password);
+            const isValid = await argon2Verify(accountPassword, password);
             if (!isValid) {
               return null;
             }
@@ -208,7 +217,7 @@ if (process.env.AUTH_SECRET) {
               });
               await adapter.linkAccount({
                 extraData: {
-                  password: await hash(password),
+                  password: await argon2Hash(password),
                 },
                 type: 'credentials',
                 userId: newUser.id,

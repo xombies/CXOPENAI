@@ -1,5 +1,34 @@
 # CXOPENAI
 
+Monorepo containing:
+
+- `apps/web`: React Router (SSR) web app
+- `apps/mobile`: Expo / React Native app
+
+## Web
+
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+Build + run locally:
+
+```bash
+cd apps/web
+npm run build
+npm run start
+```
+
+## Deploy (Vercel)
+
+- Import the repo in Vercel.
+- Set the project **Root Directory** to `apps/web`.
+- Configure any required env vars (search for `process.env.*` usage in `apps/web`).
+
+## License
+
 MIT License
 
 Copyright (c) 2026 xombies

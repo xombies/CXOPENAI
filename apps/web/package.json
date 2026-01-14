@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "react-router dev",
 		"build": "react-router build",
+		"postbuild": "node ./scripts/copy-client-assets-to-public.js",
 		"start": "react-router-serve build/server/index.js",
 		"typecheck": "react-router typegen && tsc --noEmit",
 		"test": "vitest"

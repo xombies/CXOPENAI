@@ -1,0 +1,12 @@
+{
+  "functions": {
+    "api/ssr.cjs": {
+      "includeFiles": "build/server/**"
+    }
+  },
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/api/ssr" }
+  ]
+}
+

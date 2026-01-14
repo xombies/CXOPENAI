@@ -6,18 +6,20 @@ import { authHandler, initAuthConfig } from '@hono/auth-js';
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import { hash, verify } from 'argon2';
 import { Hono } from 'hono';
-import { contextStorage, getContext } from 'hono/context-storage';
+import { contextStorage } from 'hono/context-storage';
 import { cors } from 'hono/cors';
 import { proxy } from 'hono/proxy';
 import { bodyLimit } from 'hono/body-limit';
 import { requestId } from 'hono/request-id';
-import { createHonoServer } from 'react-router-hono-server/node';
+import { createMiddleware } from 'hono/factory';
+import { createRequestHandler } from 'react-router';
 import { serializeError } from 'serialize-error';
 import ws from 'ws';
 import NeonAdapter from './adapter';
 import { getHTMLForErrorPage } from './get-html-for-error-page';
 import { isAuthAction } from './is-auth-action';
 import { API_BASENAME, api } from './route-builder';
+import * as build from 'virtual:react-router/server-build';
 neonConfig.webSocketConstructor = ws;
 
 const als = new AsyncLocalStorage<{ requestId: string }>();
@@ -251,7 +253,20 @@ app.use('/api/auth/*', async (c, next) => {
 });
 app.route(API_BASENAME, api);
 
-export default await createHonoServer({
-  app,
-  defaultLogger: false,
+const mode = process.env.NODE_ENV === 'development' ? 'development' : 'production';
+const requestHandler = createRequestHandler(build, mode);
+
+const reactRouterApp = new Hono({
+  strict: false,
 });
+reactRouterApp.use((c, next) => {
+  return createMiddleware((c2) => requestHandler(c2.req.raw))(c, next);
+});
+
+const basename = import.meta.env.REACT_ROUTER_HONO_SERVER_BASENAME ?? '/';
+app.route(`${basename}`, reactRouterApp);
+if (basename) {
+  app.route(`${basename}.data`, reactRouterApp);
+}
+
+export default app;

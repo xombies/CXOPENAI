@@ -318,8 +318,8 @@
       .agents {
         margin: 26px auto 0;
         display: grid;
-        grid-template-columns: 1fr auto 1fr;
-        gap: 18px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 24px;
         align-items: center;
       }
 
@@ -504,7 +504,7 @@
 
       .answers {
         display: grid;
-        grid-template-columns: 1fr auto 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 12px;
         padding: 12px;
         align-items: start;
@@ -788,12 +788,9 @@
           </button>
         </div>
 
-        <div class="brand" aria-label="AgentX vs AgentC">
+        <div class="brand" aria-label="AgentX and AgentC">
           <div class="agent-title">
             <span class="agent-word sf-ultrathin">Agent</span><span class="agent-letter sf-light">X</span>
-          </div>
-          <div class="mid-vs" aria-hidden="true">
-            <span class="sf-light">V</span><span class="sf-thin">s</span>
           </div>
           <div class="agent-title">
             <span class="agent-word sf-ultrathin">Agent</span><span class="agent-letter sf-light">C</span>
@@ -816,10 +813,10 @@
         <p>Type a technical topic. AgentX and AgentC respond in the same structured format, using SF UltraThin/Thin/Light typography.</p>
 
         <div class="chips" aria-label="Example topics">
-          <button class="chip-btn" type="button" data-topic="Microservices vs Monolithic Architecture">Microservices vs Monolith</button>
-          <button class="chip-btn" type="button" data-topic="REST vs GraphQL API Design">REST vs GraphQL</button>
-          <button class="chip-btn" type="button" data-topic="SQL vs NoSQL Databases">SQL vs NoSQL</button>
-          <button class="chip-btn" type="button" data-topic="TDD vs BDD Testing Approaches">TDD vs BDD</button>
+          <button class="chip-btn" type="button" data-topic="Microservices and Monolithic Architecture">Microservices / Monolith</button>
+          <button class="chip-btn" type="button" data-topic="REST and GraphQL API Design">REST / GraphQL</button>
+          <button class="chip-btn" type="button" data-topic="SQL and NoSQL Databases">SQL / NoSQL</button>
+          <button class="chip-btn" type="button" data-topic="TDD and BDD Testing Approaches">TDD / BDD</button>
         </div>
 
         <div class="agents" aria-label="Agent profiles">
@@ -832,10 +829,6 @@
               <div class="role">Creative Engineer</div>
               <span class="badge x">Innovative</span>
             </div>
-          </div>
-
-          <div class="vs" aria-hidden="true">
-            <span class="sf-light">V</span><span class="sf-thin">s</span>
           </div>
 
           <div class="agent-card">
@@ -1380,9 +1373,6 @@ Be skeptical and systematic.`,
                   <div class="role">Creative Engineer</div>
                 </div>
                   <pre>${renderAnswerHTML(round.agentX)}</pre>
-                </div>
-                <div class="answer-vs" aria-hidden="true">
-                  <span class="sf-light">V</span><span class="sf-thin">s</span>
                 </div>
                 <div class="answer c">
                   <div class="answer-head">

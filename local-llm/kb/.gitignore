@@ -1,0 +1,6 @@
+# Keep large local knowledge packs out of git.
+*.json
+*.jsonl
+*.ndjson
+*.txt
+

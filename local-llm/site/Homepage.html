@@ -41,6 +41,10 @@
         height: 100%;
       }
 
+      html {
+        scroll-padding-bottom: 220px;
+      }
+
       body {
         margin: 0;
         font-family: var(--sf-font);
@@ -479,9 +483,7 @@
         display: flex;
         flex-direction: column;
         gap: 14px;
-        overflow: auto;
-        max-height: min(52vh, 520px);
-        scrollbar-gutter: stable;
+        overflow: visible;
       }
 
       .empty {
@@ -498,6 +500,7 @@
         border-radius: var(--radius-lg);
         background: rgba(255, 255, 255, 0.65);
         overflow: hidden;
+        scroll-margin-bottom: 220px;
       }
 
       .round-meta {
@@ -1022,7 +1025,7 @@
 
         const MAX_BULLETS = 7;
         const MAX_WORDS_PER_BULLET = 16;
-        const MAX_ROUNDS = 60;
+        const MAX_CONTEXT_ROUNDS = 12;
 
         const el = (id) => document.getElementById(id);
         function normalizeEndpoint(raw) {
@@ -1340,7 +1343,7 @@
 
           const contextParts = [];
           if (state.rounds.length) {
-            const recent = state.rounds.slice(-12);
+            const recent = state.rounds.slice(-MAX_CONTEXT_ROUNDS);
             const offset = state.rounds.length - recent.length;
             const transcript = recent
               .map((r, idx) => {
@@ -1402,9 +1405,11 @@
           const contextParts = [`Latest user message: ${last.topic}`];
 
           if (state.autoContext) {
-            const transcript = state.rounds
+            const recent = state.rounds.slice(-MAX_CONTEXT_ROUNDS);
+            const offset = state.rounds.length - recent.length;
+            const transcript = recent
               .map((r, idx) => {
-                const n = idx + 1;
+                const n = offset + idx + 1;
                 return `Round ${n}\nUser: ${clip(r.topic, 420)}\nAgent X:\n${clip(r.agentX, 900)}\n\nAgent C:\n${clip(r.agentC, 900)}`;
               })
               .join("\n\n");
@@ -1442,16 +1447,26 @@
 
         function isNearBottom(container) {
           const threshold = 72;
-          return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+          const canScroll = container.scrollHeight - container.clientHeight > 2;
+          if (canScroll) {
+            return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+          }
+
+          const doc = document.documentElement;
+          const scrollBottom = window.scrollY + window.innerHeight;
+          return doc.scrollHeight - scrollBottom < 260;
         }
 
         function scrollConversationToBottom(smooth) {
           const container = el("conversation");
-          const top = Math.max(0, container.scrollHeight - container.clientHeight);
-          try {
-            container.scrollTo({ top, behavior: smooth ? "smooth" : "auto" });
-          } catch {
-            container.scrollTop = top;
+          const canScroll = container.scrollHeight - container.clientHeight > 2;
+          if (canScroll) {
+            const top = Math.max(0, container.scrollHeight - container.clientHeight);
+            try {
+              container.scrollTo({ top, behavior: smooth ? "smooth" : "auto" });
+            } catch {
+              container.scrollTop = top;
+            }
           }
 
           const last = container.lastElementChild;
@@ -1479,8 +1494,9 @@
           updateComposerDisabled();
 
           const container = el("conversation");
+          const canScroll = container.scrollHeight - container.clientHeight > 2;
           const wasNearBottom = isNearBottom(container);
-          const prevScrollTop = container.scrollTop;
+          const prevScrollTop = canScroll ? container.scrollTop : window.scrollY;
           const shouldAutoScroll = state.rounds.length !== state.lastRenderedCount || wasNearBottom;
           container.innerHTML = "";
 
@@ -1537,7 +1553,11 @@
             requestAnimationFrame(() => scrollConversationToBottom(false));
             setTimeout(() => scrollConversationToBottom(false), 120);
           } else {
-            container.scrollTop = prevScrollTop;
+            if (canScroll) {
+              container.scrollTop = prevScrollTop;
+            } else {
+              window.scrollTo({ top: prevScrollTop, behavior: "auto" });
+            }
           }
         }
 
@@ -1597,7 +1617,7 @@
             if (!raw) return;
             const parsed = JSON.parse(raw);
             if (Array.isArray(parsed)) {
-              state.rounds = parsed.filter((r) => r && typeof r === "object").slice(-MAX_ROUNDS);
+              state.rounds = parsed.filter((r) => r && typeof r === "object");
             }
           } catch {
             // ignore
@@ -1606,7 +1626,24 @@
 
         function saveHistory() {
           try {
-            localStorage.setItem(STORAGE.debate, JSON.stringify(state.rounds.slice(-MAX_ROUNDS)));
+            localStorage.setItem(STORAGE.debate, JSON.stringify(state.rounds));
+            return;
+          } catch {
+            // ignore
+          }
+
+          try {
+            const copy = state.rounds.slice();
+            while (copy.length) {
+              copy.shift();
+              try {
+                localStorage.setItem(STORAGE.debate, JSON.stringify(copy));
+                state.rounds = copy;
+                return;
+              } catch {
+                // keep trimming
+              }
+            }
           } catch {
             // ignore
           }
@@ -1684,9 +1721,6 @@
               agentC: first.agentC,
               at: Date.now()
             });
-            if (state.rounds.length > MAX_ROUNDS) {
-              state.rounds = state.rounds.slice(-MAX_ROUNDS);
-            }
             saveHistory();
             setStatusRight("");
           } catch (err) {
@@ -1711,9 +1745,6 @@
               agentC: next.agentC,
               at: Date.now()
             });
-            if (state.rounds.length > MAX_ROUNDS) {
-              state.rounds = state.rounds.slice(-MAX_ROUNDS);
-            }
             saveHistory();
             setStatusRight("");
           } catch (err) {

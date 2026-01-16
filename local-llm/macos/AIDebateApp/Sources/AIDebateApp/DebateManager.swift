@@ -101,8 +101,8 @@ final class DebateManager: ObservableObject {
                 let round = DebateRound(
                     topic: trimmedTopic,
                     model: model,
-                    agentX: normalizeBullets(x),
-                    agentC: normalizeBullets(c)
+                    agentX: normalizeOutput(x),
+                    agentC: normalizeOutput(c)
                 )
 
                 rounds = [round]
@@ -176,8 +176,8 @@ final class DebateManager: ObservableObject {
                 let next = DebateRound(
                     topic: rounds.last?.topic ?? "Debate",
                     model: model,
-                    agentX: normalizeBullets(x),
-                    agentC: normalizeBullets(c)
+                    agentX: normalizeOutput(x),
+                    agentC: normalizeOutput(c)
                 )
                 rounds.append(next)
                 resolvedModel = model
@@ -208,12 +208,13 @@ final class DebateManager: ObservableObject {
 }
 
 private let outputContract = """
-Output ONLY plain-text bullets.
-Write 3–5 bullets starting with "- Outcome: ".
-End with exactly one bullet starting with "- Question: " and include a "?".
-No markdown and never use **.
-If you include terminal commands, wrap them in single backticks.
-The Question MUST ask which client preference/constraint matters most and whether to favor AgentX, AgentC, or a hybrid.
+You are writing directly to MK (the user). Every round, refine the language to be more tailored to MK: cut generic filler, remove repetition, and make the guidance more build-ready and direct.
+
+Output must be 2 to 6 short paragraphs. Each paragraph must start with exactly one purpose emoji as the first character (examples: 🧠 explanation, 🛠️ implementation, 🔁 refinement, ✅ constraints, ❓ final question). Do not use bullet points, numbered lists, markdown, headings, or quote blocks. Never output **. If you include terminal commands, wrap them in single backticks.
+
+To highlight origin, append exactly one origin emoji tag at the end of key sentences: 🗣️ (directly from MK’s latest message), 💬 (paraphrased from earlier conversation/context), 🧠 (general knowledge), 🧪 (inference), 🔮 (assumption/uncertainty). Use at least one origin tag per paragraph, and never more than one origin tag per sentence.
+
+When there is prior conversation, refine at least one point from the previous round (tighter wording, more specific) and add at least one new improvement not previously mentioned. The final paragraph must start with ❓ and contain exactly one short question addressed to MK, and that question sentence must end with 🗣️.
 """
 
 private let agentXSystemPrompt = """
@@ -230,15 +231,17 @@ private func startPrompt(topic: String, for speaker: DebateSpeaker) -> String {
     switch speaker {
     case .agentX:
         return """
-Debate topic: \(topic)
+MK message: \(topic)
 
-Be bold, creative, and practical.
+This is the first round. Respond directly to MK.
+Lean bold, creative, and practical.
 """
     case .agentC:
         return """
-Debate topic: \(topic)
+MK message: \(topic)
 
-Be skeptical, systematic, and reliability-focused.
+This is the first round. Respond directly to MK.
+Lean skeptical, systematic, and reliability-focused.
 """
     case .system:
         return "System."
@@ -249,7 +252,7 @@ private extension DebateManager {
     func continuePrompt(for speaker: DebateSpeaker, autoContext: Bool) -> String {
         let topic = rounds.last?.topic ?? "Debate"
 
-        var parts: [String] = ["Topic: \(topic)"]
+        var parts: [String] = ["MK latest message: \(topic)"]
 
         if autoContext {
             let transcript = rounds
@@ -258,6 +261,9 @@ private extension DebateManager {
                     let n = idx + 1
                     return """
 Round \(n)
+MK:
+\(clip(r.topic, maxChars: 420))
+
 Agent X:
 \(clip(r.agentX, maxChars: 900))
 
@@ -271,18 +277,19 @@ Agent C:
         } else if let last = rounds.last {
             parts.append(contentsOf: [
                 "Previous round:",
+                "MK:\n\(clip(last.topic, maxChars: 900))",
                 "Agent X:\n\(clip(last.agentX, maxChars: 1200))",
                 "Agent C:\n\(clip(last.agentC, maxChars: 1200))"
             ])
         }
 
-        parts.append("Continue the debate for one more round.")
+        parts.append("This is the Next Round. Refine at least one point from the previous round and add at least one new improvement, with less repetition and more MK-tailored specificity.")
 
         switch speaker {
         case .agentX:
-            parts.append("Be bold, creative, and practical.")
+            parts.append("Lean bold, creative, and practical.")
         case .agentC:
-            parts.append("Be skeptical, systematic, and reliability-focused.")
+            parts.append("Lean skeptical, systematic, and reliability-focused.")
         case .system:
             break
         }
@@ -319,7 +326,7 @@ Agent C:
     }
 }
 
-private func normalizeBullets(_ text: String) -> String {
+private func normalizeOutput(_ text: String) -> String {
     let raw = text
         .replacingOccurrences(of: "\r\n", with: "\n")
         .replacingOccurrences(of: "**", with: "")
@@ -327,93 +334,12 @@ private func normalizeBullets(_ text: String) -> String {
 
     guard !raw.isEmpty else { return "" }
 
-    let lines = raw
-        .split(separator: "\n", omittingEmptySubsequences: true)
+    let cleaned = raw
+        .split(separator: "\n", omittingEmptySubsequences: false)
         .map { stripBulletPrefix(String($0)) }
-        .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-        .filter { !$0.isEmpty }
+        .joined(separator: "\n")
 
-    guard !lines.isEmpty else { return raw }
-
-    let isQuestion: (String) -> Bool = { line in
-        let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
-        if t.lowercased().hasPrefix("question:") { return true }
-        return t.hasSuffix("?")
-    }
-
-    let lastQuestionIdx = lines.indices.reversed().first(where: { isQuestion(lines[$0]) })
-
-    let outcomesRaw: [String]
-    let questionRaw: String
-
-    if let idx = lastQuestionIdx {
-        questionRaw = String(lines[idx])
-        outcomesRaw = lines.enumerated().compactMap { $0.offset == idx ? nil : String($0.element) }
-    } else {
-        outcomesRaw = Array(lines)
-        questionRaw = ""
-    }
-
-    let maxOutcomes = 5
-    let maxWords = 16
-
-    var bullets: [String] = []
-    for o in outcomesRaw.prefix(maxOutcomes) {
-        let cleaned = o.replacingOccurrences(of: "Outcome:", with: "", options: [.caseInsensitive, .anchored]).trimmingCharacters(in: .whitespacesAndNewlines)
-        let labeled = "Outcome: \(cleaned)"
-        bullets.append("- \(clipWordsPreservingBackticks(labeled, maxWords: maxWords))")
-    }
-
-    let question = ensureQuestion(questionRaw)
-    bullets.append("- \(clipWordsPreservingBackticks(question, maxWords: maxWords))")
-
-    return bullets.joined(separator: "\n")
-}
-
-private func ensureQuestion(_ text: String) -> String {
-    let t = text.trimmingCharacters(in: .whitespacesAndNewlines)
-    let base = t.replacingOccurrences(of: "Question:", with: "", options: [.caseInsensitive, .anchored]).trimmingCharacters(in: .whitespacesAndNewlines)
-    let questionBody = base.isEmpty
-        ? "Favor AgentX, AgentC, or hybrid—what client outcome matters most"
-        : base
-    let prefixed = "Question: \(questionBody)"
-    return prefixed.hasSuffix("?") ? prefixed : prefixed + "?"
-}
-
-private func clipWordsPreservingBackticks(_ text: String, maxWords: Int) -> String {
-    let s = text.trimmingCharacters(in: .whitespacesAndNewlines)
-    guard !s.isEmpty else { return "" }
-
-    var tokens: [String] = []
-    var i = s.startIndex
-
-    while i < s.endIndex {
-        while i < s.endIndex, s[i].isWhitespace {
-            i = s.index(after: i)
-        }
-        if i >= s.endIndex { break }
-
-        if s[i] == "`" {
-            let next = s.index(after: i)
-            if let end = s[next...].firstIndex(of: "`") {
-                tokens.append(String(s[i...end]))
-                i = s.index(after: end)
-                continue
-            }
-            tokens.append(String(s[i...]))
-            break
-        }
-
-        var j = i
-        while j < s.endIndex, !s[j].isWhitespace {
-            j = s.index(after: j)
-        }
-        tokens.append(String(s[i..<j]))
-        i = j
-    }
-
-    if tokens.count <= maxWords { return tokens.joined(separator: " ") }
-    return tokens.prefix(maxWords).joined(separator: " ") + "…"
+    return cleaned.trimmingCharacters(in: .whitespacesAndNewlines)
 }
 
 private func clip(_ text: String, maxChars: Int) -> String {

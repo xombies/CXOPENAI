@@ -1,0 +1,20 @@
+import { handle } from '@hono/node-server/vercel';
+
+let cachedHandler;
+
+export default async function handler(req, res) {
+  try {
+    if (!cachedHandler) {
+      const mod = await import('../apps/web/build/server/index.js');
+      cachedHandler = handle(mod.default);
+    }
+
+    return cachedHandler(req, res);
+  } catch (error) {
+    console.error('[api/ssr] Function invocation failed', error);
+    res.statusCode = 500;
+    res.setHeader('content-type', 'text/plain; charset=utf-8');
+    res.setHeader('cache-control', 'no-store');
+    res.end('Internal Server Error');
+  }
+}

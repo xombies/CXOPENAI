@@ -1,0 +1,11 @@
+{
+  "functions": {
+    "api/ssr.js": {
+      "includeFiles": "apps/web/build/server/**"
+    }
+  },
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/api/ssr" }
+  ]
+}

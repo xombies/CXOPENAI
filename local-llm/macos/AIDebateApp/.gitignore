@@ -1,0 +1,13 @@
+.DS_Store
+/.build
+/Packages
+xcuserdata/
+DerivedData/
+*.xcodeproj
+*.xcworkspace
+.swiftpm/
+*.tmlanguage.cache
+*.moved-aside
+*.xccheckout
+*.xcscmblueprint
+

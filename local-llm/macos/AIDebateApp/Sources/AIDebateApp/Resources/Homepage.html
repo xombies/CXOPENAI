@@ -1,0 +1,1705 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Homepage</title>
+    <style>
+      :root {
+        --sf-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, "Segoe UI", sans-serif;
+        --sf-ultrathin: 100;
+        --sf-thin: 200;
+        --sf-light: 300;
+
+        --bg0: #eef2ff;
+        --bg1: #ffffff;
+        --bg2: #f5f3ff;
+
+        --text: #0f172a;
+        --muted: #64748b;
+        --border: rgba(15, 23, 42, 0.12);
+        --card: rgba(255, 255, 255, 0.78);
+        --glass: rgba(255, 255, 255, 0.72);
+
+        --x: #7c3aed;
+        --c: #2563eb;
+
+        --shadow: 0 18px 50px rgba(2, 6, 23, 0.10);
+        --shadow-soft: 0 10px 24px rgba(2, 6, 23, 0.08);
+
+        --radius-lg: 24px;
+        --radius-md: 18px;
+        --radius-sm: 14px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--sf-font);
+        font-weight: var(--sf-thin);
+        color: var(--text);
+        background: radial-gradient(1200px 900px at 20% 0%, var(--bg0), transparent 55%),
+          radial-gradient(1000px 800px at 90% 20%, var(--bg2), transparent 55%),
+          linear-gradient(135deg, var(--bg0), var(--bg1) 38%, var(--bg2));
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      .sf-ultrathin {
+        font-weight: var(--sf-ultrathin);
+      }
+
+      .sf-thin {
+        font-weight: var(--sf-thin);
+      }
+
+      .sf-light {
+        font-weight: var(--sf-light);
+      }
+
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 16px;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        background: var(--glass);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35), 0 12px 30px rgba(2, 6, 23, 0.06);
+      }
+
+      .header-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 14px 0;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        flex: 1;
+      }
+
+      .agent-title {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 2px;
+        font-size: 20px;
+        letter-spacing: -0.01em;
+        user-select: none;
+      }
+
+      .agent-title .agent-word {
+        font-weight: var(--sf-ultrathin);
+      }
+
+      .agent-title .agent-letter {
+        font-weight: var(--sf-light);
+      }
+
+      .mid-vs {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        height: auto;
+        padding: 0 6px;
+        border: none;
+        border-radius: 0;
+        background: none;
+        box-shadow: none;
+        overflow: visible;
+        position: relative;
+        letter-spacing: -0.02em;
+        font-size: 14px;
+        color: rgba(2, 6, 23, 0.72);
+        line-height: 1.05;
+      }
+
+      .mid-vs img,
+      .mid-vs svg {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+        filter: drop-shadow(0 10px 18px rgba(2, 6, 23, 0.12));
+      }
+
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        background: rgba(255, 255, 255, 0.55);
+        color: var(--muted);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .pill-btn {
+        appearance: none;
+        cursor: pointer;
+        user-select: none;
+        transition: transform 120ms ease, box-shadow 200ms ease, background 200ms ease, border-color 200ms ease, color 200ms ease;
+      }
+
+      .pill-btn:hover {
+        background: rgba(255, 255, 255, 0.75);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .pill-btn:active {
+        transform: translateY(1px);
+      }
+
+      .pill-btn[aria-pressed="true"] {
+        color: rgba(2, 6, 23, 0.82);
+        border-color: rgba(79, 70, 229, 0.28);
+        background: linear-gradient(135deg, rgba(124, 58, 237, 0.12), rgba(37, 99, 235, 0.10));
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #22c55e;
+        box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.12);
+      }
+
+      .dot.context {
+        background: rgba(124, 58, 237, 0.95);
+        box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.14);
+      }
+
+      .dot.online {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.95), rgba(236, 72, 153, 0.95));
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.14);
+      }
+
+      .pill-btn[aria-pressed="false"] .dot.context {
+        background: rgba(100, 116, 139, 0.9);
+        box-shadow: 0 0 0 4px rgba(100, 116, 139, 0.12);
+      }
+
+      .btn {
+        appearance: none;
+        border: 1px solid rgba(15, 23, 42, 0.14);
+        background: rgba(255, 255, 255, 0.65);
+        color: var(--text);
+        border-radius: 999px;
+        padding: 10px 12px;
+        font-family: var(--sf-font);
+        font-weight: var(--sf-thin);
+        font-size: 13px;
+        cursor: pointer;
+        transition: transform 120ms ease, box-shadow 200ms ease, background 200ms ease;
+      }
+
+      .btn:hover {
+        background: rgba(255, 255, 255, 0.85);
+        box-shadow: var(--shadow-soft);
+      }
+
+      .btn:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn:active {
+        transform: translateY(1px);
+      }
+
+      .btn.primary {
+        border: none;
+        color: white;
+        background: linear-gradient(90deg, rgba(37, 99, 235, 0.95), rgba(124, 58, 237, 0.95), rgba(236, 72, 153, 0.95));
+        box-shadow: 0 16px 40px rgba(79, 70, 229, 0.22);
+      }
+
+      .btn.primary:hover {
+        box-shadow: 0 18px 46px rgba(79, 70, 229, 0.26);
+      }
+
+      .btn.danger {
+        border: 1px solid rgba(239, 68, 68, 0.35);
+        background: rgba(239, 68, 68, 0.10);
+        color: rgb(153, 27, 27);
+      }
+
+      main {
+        padding: 26px 0 190px;
+      }
+
+      .hero {
+        text-align: center;
+        padding: 26px 0 22px;
+      }
+
+      .hero h2 {
+        margin: 0 0 8px;
+        font-size: 14px;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+      }
+
+      .hero h1 {
+        margin: 0 0 10px;
+        font-size: 34px;
+        letter-spacing: -0.02em;
+      }
+
+      .hero p {
+        margin: 0 auto;
+        max-width: 760px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .chips {
+        margin-top: 16px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+      }
+
+      .chip-btn {
+        appearance: none;
+        cursor: pointer;
+        border: 1px solid rgba(15, 23, 42, 0.12);
+        background: rgba(255, 255, 255, 0.58);
+        color: rgba(2, 6, 23, 0.78);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-family: var(--sf-font);
+        font-weight: var(--sf-thin);
+        font-size: 12px;
+        transition: transform 120ms ease, box-shadow 200ms ease, background 200ms ease, border-color 200ms ease;
+      }
+
+      .chip-btn:hover {
+        background: rgba(255, 255, 255, 0.82);
+        box-shadow: var(--shadow-soft);
+        border-color: rgba(79, 70, 229, 0.20);
+      }
+
+      .chip-btn:active {
+        transform: translateY(1px);
+      }
+
+      .agents {
+        margin: 26px auto 0;
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 18px;
+        align-items: center;
+      }
+
+      .agent-card {
+        border: none;
+        border-radius: 0;
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        box-shadow: none;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 16px;
+        text-align: left;
+        align-items: center;
+      }
+
+      .agent-card img {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        filter: drop-shadow(0 16px 26px rgba(2, 6, 23, 0.14));
+      }
+
+      .agent-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .agent-meta .name {
+        font-size: 24px;
+        letter-spacing: -0.01em;
+      }
+
+      .agent-meta .role {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        background: rgba(255, 255, 255, 0.60);
+        width: fit-content;
+      }
+
+      .badge.x {
+        color: rgb(88, 28, 135);
+        border-color: rgba(124, 58, 237, 0.30);
+        background: rgba(124, 58, 237, 0.10);
+      }
+
+      .badge.c {
+        color: rgb(30, 64, 175);
+        border-color: rgba(37, 99, 235, 0.30);
+        background: rgba(37, 99, 235, 0.10);
+      }
+
+      .vs {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        height: auto;
+        padding: 2px 10px;
+        border: none;
+        border-radius: 0;
+        background: none;
+        box-shadow: none;
+        font-size: 18px;
+        letter-spacing: 0.06em;
+        color: rgba(2, 6, 23, 0.68);
+        line-height: 1.05;
+        user-select: none;
+      }
+
+      .panel {
+        margin-top: 22px;
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        border-radius: var(--radius-lg);
+        background: rgba(255, 255, 255, 0.72);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        background: rgba(255, 255, 255, 0.70);
+      }
+
+      .panel-title {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .panel-title strong {
+        font-weight: var(--sf-thin);
+        letter-spacing: -0.01em;
+      }
+
+      .panel-title span {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .conversation {
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        overflow: auto;
+        max-height: min(52vh, 520px);
+        scrollbar-gutter: stable;
+      }
+
+      .empty {
+        padding: 22px 14px;
+        border-radius: var(--radius-md);
+        border: 1px dashed rgba(15, 23, 42, 0.20);
+        background: rgba(255, 255, 255, 0.55);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .round {
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        border-radius: var(--radius-lg);
+        background: rgba(255, 255, 255, 0.65);
+        overflow: hidden;
+      }
+
+      .round-meta {
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        background: rgba(255, 255, 255, 0.65);
+      }
+
+      .round-meta .left {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .round-meta .left .kicker {
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .round-meta .left .topic {
+        font-size: 14px;
+        letter-spacing: -0.01em;
+      }
+
+      .round-meta .right {
+        text-align: right;
+        font-size: 11px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .answers {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 12px;
+        padding: 12px;
+        align-items: start;
+      }
+
+      .answer-vs {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        height: auto;
+        padding: 2px 10px;
+        border: none;
+        border-radius: 0;
+        background: none;
+        box-shadow: none;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        color: rgba(2, 6, 23, 0.60);
+        line-height: 1.05;
+        user-select: none;
+        margin-top: 6px;
+      }
+
+      .answer {
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(15, 23, 42, 0.10);
+        background: rgba(255, 255, 255, 0.70);
+        padding: 12px 12px 10px;
+        min-height: 110px;
+      }
+
+      .answer.x {
+        border-color: rgba(124, 58, 237, 0.26);
+        background: linear-gradient(180deg, rgba(124, 58, 237, 0.08), rgba(255, 255, 255, 0.70));
+      }
+
+      .answer.c {
+        border-color: rgba(37, 99, 235, 0.26);
+        background: linear-gradient(180deg, rgba(37, 99, 235, 0.08), rgba(255, 255, 255, 0.70));
+      }
+
+      .answer-head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
+      .answer-head .name {
+        letter-spacing: -0.01em;
+        font-size: 14px;
+      }
+
+      .answer-head .role {
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .answer pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 13px;
+        line-height: 1.45;
+        color: var(--text);
+        font-weight: var(--sf-thin);
+      }
+
+      .terminal {
+        display: inline-block;
+        padding: 2px 6px;
+        border-radius: 10px;
+        border: 1px solid rgba(2, 6, 23, 0.10);
+        background: rgba(2, 6, 23, 0.04);
+        color: rgba(2, 6, 23, 0.84);
+        font-weight: var(--sf-light);
+      }
+
+      .composer {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-top: 1px solid rgba(15, 23, 42, 0.10);
+        background: rgba(255, 255, 255, 0.86);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        box-shadow: 0 -20px 46px rgba(2, 6, 23, 0.10);
+      }
+
+      .composer-inner {
+        padding: 14px 0 16px;
+      }
+
+      .composer-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+      }
+
+      textarea {
+        resize: none;
+        width: 100%;
+        border: 2px solid rgba(15, 23, 42, 0.16);
+        border-radius: 22px;
+        padding: 14px 16px;
+        font-family: var(--sf-font);
+        font-weight: var(--sf-thin);
+        font-size: 14px;
+        line-height: 1.35;
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: 0 12px 26px rgba(2, 6, 23, 0.08);
+        outline: none;
+        min-height: 54px;
+        max-height: 120px;
+      }
+
+      textarea:focus {
+        border-color: rgba(79, 70, 229, 0.45);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15), 0 16px 32px rgba(2, 6, 23, 0.10);
+      }
+
+      .composer-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .status {
+        margin-top: 10px;
+        font-size: 12px;
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .status code {
+        font-family: var(--sf-font);
+        font-size: 11px;
+        font-weight: var(--sf-light);
+        padding: 2px 6px;
+        border-radius: 8px;
+        background: rgba(2, 6, 23, 0.06);
+        border: 1px solid rgba(2, 6, 23, 0.08);
+        color: rgba(2, 6, 23, 0.82);
+      }
+
+      .error {
+        color: rgb(153, 27, 27);
+      }
+
+      dialog {
+        border: 1px solid rgba(15, 23, 42, 0.16);
+        border-radius: var(--radius-lg);
+        padding: 0;
+        width: min(760px, calc(100vw - 28px));
+        box-shadow: var(--shadow);
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+
+      dialog::backdrop {
+        background: rgba(2, 6, 23, 0.25);
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+      }
+
+      .modal-head {
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(15, 23, 42, 0.10);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .modal-head strong {
+        font-weight: var(--sf-thin);
+      }
+
+      .modal-body {
+        padding: 14px 16px 16px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .field label {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .field input,
+      .field select {
+        width: 100%;
+        border: 1px solid rgba(15, 23, 42, 0.18);
+        border-radius: 14px;
+        padding: 10px 12px;
+        font-family: var(--sf-font);
+        font-weight: var(--sf-thin);
+        font-size: 13px;
+        background: rgba(255, 255, 255, 0.82);
+        outline: none;
+      }
+
+      .field input:focus,
+      .field select:focus {
+        border-color: rgba(79, 70, 229, 0.40);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+      }
+
+      .modal-foot {
+        padding: 12px 16px 14px;
+        border-top: 1px solid rgba(15, 23, 42, 0.10);
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      @media (min-width: 768px) {
+        .wrap {
+          padding: 0 24px;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .agents {
+          grid-template-columns: 1fr;
+        }
+        .vs {
+          justify-self: center;
+        }
+        .answers {
+          grid-template-columns: 1fr;
+        }
+        .answer-vs {
+          display: none;
+        }
+        .modal-body {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div class="wrap header-row">
+        <div class="header-actions">
+          <button
+            class="pill pill-btn"
+            id="autoContextBtn"
+            type="button"
+            aria-pressed="true"
+            title="Auto context (include conversation history)"
+          >
+            <span class="dot context" id="autoContextDot" aria-hidden="true"></span>
+            <span id="autoContextLabel">Auto context</span>
+          </button>
+          <span class="pill" title="Ollama health">
+            <span class="dot" id="healthDot"></span>
+            <span id="healthText">Local</span>
+          </span>
+          <button class="pill pill-btn" id="onlineBtn" type="button" title="Open online mode">
+            <span class="dot online" aria-hidden="true"></span>
+            <span>Online</span>
+          </button>
+        </div>
+
+        <div class="brand" aria-label="AgentX vs AgentC">
+          <div class="agent-title">
+            <span class="agent-word sf-ultrathin">Agent</span><span class="agent-letter sf-light">X</span>
+          </div>
+          <div class="mid-vs" aria-hidden="true">
+            <span class="sf-light">V</span><span class="sf-thin">s</span>
+          </div>
+          <div class="agent-title">
+            <span class="agent-word sf-ultrathin">Agent</span><span class="agent-letter sf-light">C</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn" id="settingsBtn" type="button">Settings</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="hero">
+        <h2 class="sf-thin">Two AI engineers. Same template. Different perspective.</h2>
+        <h1>
+          <span class="sf-ultrathin">Local</span>
+          <span class="sf-thin">AI Debate</span>
+        </h1>
+        <p>Type a technical topic. AgentX and AgentC respond in the same structured format, using SF UltraThin/Thin/Light typography.</p>
+
+        <div class="chips" aria-label="Example topics">
+          <button class="chip-btn" type="button" data-topic="Microservices vs Monolithic Architecture">Microservices vs Monolith</button>
+          <button class="chip-btn" type="button" data-topic="REST vs GraphQL API Design">REST vs GraphQL</button>
+          <button class="chip-btn" type="button" data-topic="SQL vs NoSQL Databases">SQL vs NoSQL</button>
+          <button class="chip-btn" type="button" data-topic="TDD vs BDD Testing Approaches">TDD vs BDD</button>
+        </div>
+
+        <div class="agents" aria-label="Agent profiles">
+          <div class="agent-card">
+            <img src="https://ucarecdn.com/82e21364-f8e6-4526-9464-16cac4cfaba6/-/format/auto/" alt="Agent X" />
+            <div class="agent-meta">
+              <div class="name">
+                <span class="sf-ultrathin">Agent</span><span class="sf-light">X</span>
+              </div>
+              <div class="role">Creative Engineer</div>
+              <span class="badge x">Innovative</span>
+            </div>
+          </div>
+
+          <div class="vs" aria-hidden="true">
+            <span class="sf-light">V</span><span class="sf-thin">s</span>
+          </div>
+
+          <div class="agent-card">
+            <img src="https://ucarecdn.com/1d3af6f0-a64f-4a71-a100-414802839a19/-/format/auto/" alt="Agent C" />
+            <div class="agent-meta">
+              <div class="name">
+                <span class="sf-ultrathin">Agent</span><span class="sf-light">C</span>
+              </div>
+              <div class="role">Logical Engineer</div>
+              <span class="badge c">Systematic</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" aria-label="Conversation">
+        <div class="panel-head">
+          <div class="panel-title">
+            <strong class="sf-thin">Conversation</strong>
+            <span id="subhead">Uses local Ollama (in-app proxy)</span>
+          </div>
+          <div class="header-actions">
+            <button class="btn" id="nextRoundBtn" type="button" disabled>Next Round</button>
+            <button class="btn danger" id="resetBtn" type="button" disabled>Reset</button>
+          </div>
+        </div>
+        <div class="conversation" id="conversation">
+          <div class="empty" id="emptyState">Enter a topic below to start the debate.</div>
+        </div>
+      </section>
+    </main>
+
+    <div class="composer" role="region" aria-label="Debate input">
+      <div class="wrap composer-inner">
+        <form id="topicForm" autocomplete="off">
+          <div class="composer-row">
+            <textarea id="topicInput" placeholder="Enter a technical topic for both AI engineers to debate…" rows="1"></textarea>
+            <div class="composer-actions">
+              <button class="btn primary" id="startBtn" type="submit">Start Debate</button>
+            </div>
+          </div>
+          <div class="status">
+            <div id="statusLeft">
+              Endpoint <code id="endpointCode"></code> • Model <code id="modelCode">auto</code>
+            </div>
+            <div id="statusRight"></div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <dialog id="settingsModal">
+      <div class="modal-head">
+        <strong>Settings</strong>
+        <button class="btn" id="closeSettingsBtn" type="button">Close</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label for="endpointInput">Ollama Endpoint (leave blank for in-app proxy)</label>
+          <input id="endpointInput" type="text" placeholder="(recommended) leave blank • optional: http://localhost:3030" />
+        </div>
+        <div class="field">
+          <label for="modelInput">Model Override (optional)</label>
+          <input id="modelInput" type="text" placeholder="mk-x-gemma:1b" />
+        </div>
+        <div class="field">
+          <label for="onlineUrlInput">Online URL</label>
+          <input id="onlineUrlInput" type="text" placeholder="https://chatgpt.com" />
+        </div>
+        <div class="field">
+          <label for="numCtxInput">Context Window (num_ctx)</label>
+          <input id="numCtxInput" type="number" min="512" step="256" placeholder="2048" />
+        </div>
+        <div class="field">
+          <label for="numPredictInput">Max Tokens (num_predict)</label>
+          <input id="numPredictInput" type="number" min="32" step="32" placeholder="128" />
+        </div>
+        <div class="field">
+          <label for="modelsSelect">Detected Models</label>
+          <select id="modelsSelect">
+            <option value="">(refresh to load)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <button class="btn" id="refreshModelsBtn" type="button">Refresh Models</button>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn" id="testBtn" type="button">Test Connection</button>
+        <button class="btn primary" id="saveBtn" type="button">Save</button>
+      </div>
+    </dialog>
+
+    <script>
+      (() => {
+        const STORAGE = {
+          endpoint: "ollamaEndpoint",
+          modelOverride: "ollamaModelOverride",
+          autoModel: "ollamaAutoModelV2",
+          options: "ollamaOptionsV1",
+          autoContext: "debateAutoContextV1",
+          debate: "debateHistoryV1",
+          onlineUrl: "debateOnlineUrlV1"
+        };
+
+        const DEFAULT_ENDPOINT = "";
+        const DEFAULT_ONLINE_URL = "https://chatgpt.com";
+        const DEFAULT_OPTIONS = { numCtx: 2048, numPredict: 128 };
+
+        const AGENT_X_SYSTEM =
+          "You are Agent X, a creative, exploratory senior engineer. Output ONLY plain-text bullets. Use '- Outcome: …' for 3–5 bullets, then end with exactly one '- Question: …?' bullet asking which client preference/constraint and which idea (AgentX/AgentC/hybrid) to favor. No markdown and never use **. If you include terminal commands, wrap them in single backticks.";
+        const AGENT_C_SYSTEM =
+          "You are Agent C, a logical and skeptical senior engineer. Output ONLY plain-text bullets. Use '- Outcome: …' for 3–5 bullets, then end with exactly one '- Question: …?' bullet asking which client preference/constraint and which idea (AgentX/AgentC/hybrid) to favor. No markdown and never use **. If you include terminal commands, wrap them in single backticks.";
+
+        const MAX_BULLETS = 7;
+        const MAX_WORDS_PER_BULLET = 16;
+        const MAX_ROUNDS = 60;
+
+        const el = (id) => document.getElementById(id);
+        const rawEndpoint = (localStorage.getItem(STORAGE.endpoint) || DEFAULT_ENDPOINT).trim().replace(/\/+$/, "");
+        const initialEndpoint = /:11434$/.test(rawEndpoint) ? DEFAULT_ENDPOINT : rawEndpoint || DEFAULT_ENDPOINT;
+        if (initialEndpoint !== rawEndpoint) {
+          try {
+            localStorage.setItem(STORAGE.endpoint, initialEndpoint);
+          } catch {
+            // ignore
+          }
+        }
+        const state = {
+          endpoint: initialEndpoint,
+          modelOverride: (localStorage.getItem(STORAGE.modelOverride) || "").trim(),
+          options: DEFAULT_OPTIONS,
+          autoContext: localStorage.getItem(STORAGE.autoContext) !== "false",
+          autoModelName: (localStorage.getItem(STORAGE.autoModel) || "").trim() || null,
+          onlineUrl: (localStorage.getItem(STORAGE.onlineUrl) || DEFAULT_ONLINE_URL).trim(),
+          topic: "",
+          rounds: [],
+          loading: false,
+          error: null,
+          lastRenderedCount: 0
+        };
+
+        function escapeHTML(text) {
+          return String(text || "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+        }
+
+        function setStatusRight(message, isError = false) {
+          const node = el("statusRight");
+          node.textContent = message || "";
+          node.className = isError ? "error" : "";
+        }
+
+        function renderAnswerHTML(text) {
+          const safe = escapeHTML(String(text || "").split("**").join(""));
+          if (!safe.includes("`")) return safe;
+          const parts = safe.split("`");
+          if (parts.length === 1) return safe;
+          return parts.map((part, idx) => (idx % 2 === 1 ? `<span class="terminal sf-light">${part}</span>` : part)).join("");
+        }
+
+        function clipWords(text, maxWords) {
+          const s = String(text || "").trim();
+          if (!s) return "";
+
+          const tokens = [];
+          let i = 0;
+          while (i < s.length) {
+            while (i < s.length && /\s/.test(s[i])) i++;
+            if (i >= s.length) break;
+
+            if (s[i] === "`") {
+              const j = s.indexOf("`", i + 1);
+              if (j === -1) {
+                tokens.push(s.slice(i));
+                break;
+              }
+              tokens.push(s.slice(i, j + 1));
+              i = j + 1;
+              continue;
+            }
+
+            let j = i;
+            while (j < s.length && !/\s/.test(s[j])) j++;
+            tokens.push(s.slice(i, j));
+            i = j;
+          }
+
+          if (tokens.length <= maxWords) return tokens.join(" ");
+          return tokens.slice(0, maxWords).join(" ") + "…";
+        }
+
+        function ensureQuestion(text) {
+          const t = String(text || "").trim();
+          if (!t) return "Question: Favor AgentX, AgentC, or hybrid—what client outcome matters most?";
+          const base = t.replace(/^(outcome|question)\s*:\s*/i, "").trim();
+          const withPrefix = /^question\s*:/i.test(t) ? t : `Question: ${base}`;
+          const withQ = /\?\s*$/.test(withPrefix) ? withPrefix : withPrefix.replace(/[.!]+\s*$/, "") + "?";
+          return withQ;
+        }
+
+        function normalizeBullets(text) {
+          const raw = String(text || "").replace(/\r\n/g, "\n").split("**").join("").trim();
+          if (!raw) return "";
+
+          const lines = raw
+            .split("\n")
+            .map((l) => l.trim())
+            .filter(Boolean);
+
+          const cleanedLines = [];
+          for (const line of lines) {
+            const cleaned = line.replace(/^[-*•]\s*/, "").replace(/^\d+[\.\)]\s*/, "").trim();
+            if (!cleaned) continue;
+            cleanedLines.push(cleaned);
+            if (cleanedLines.length >= MAX_BULLETS) break;
+          }
+          if (!cleanedLines.length) return raw;
+
+          const isQuestionLine = (s) => /^question\s*:/i.test(s) || /\?\s*$/.test(s);
+          const lastQuestionIdx = (() => {
+            for (let i = cleanedLines.length - 1; i >= 0; i--) {
+              if (isQuestionLine(cleanedLines[i])) return i;
+            }
+            return -1;
+          })();
+
+          const outcomesRaw =
+            lastQuestionIdx >= 0 ? cleanedLines.filter((_, i) => i !== lastQuestionIdx) : cleanedLines.slice();
+          const questionRaw = lastQuestionIdx >= 0 ? cleanedLines[lastQuestionIdx] : "";
+
+          const maxOutcomes = Math.max(1, MAX_BULLETS - 1);
+          const outcomes = outcomesRaw.slice(0, maxOutcomes);
+
+          const bullets = [];
+          for (const outcome of outcomes) {
+            const withoutPrefix = String(outcome).replace(/^(outcome|question)\s*:\s*/i, "").trim();
+            const labeled = `Outcome: ${withoutPrefix}`;
+            bullets.push(`- ${clipWords(labeled, MAX_WORDS_PER_BULLET)}`);
+          }
+
+          bullets.push(`- ${clipWords(ensureQuestion(questionRaw), MAX_WORDS_PER_BULLET)}`);
+          return bullets.join("\n");
+        }
+
+        function clip(text, maxChars) {
+          const s = String(text || "");
+          return s.length > maxChars ? s.slice(0, maxChars) + "…" : s;
+        }
+
+        function parseParamSizeB(paramSize) {
+          if (!paramSize || typeof paramSize !== "string") return null;
+          const m = paramSize.trim().match(/^([0-9]+(?:\.[0-9]+)?)\s*([MBT])$/i);
+          if (!m) return null;
+          const value = parseFloat(m[1]);
+          const unit = m[2].toUpperCase();
+          if (unit === "M") return value / 1000;
+          if (unit === "B") return value;
+          if (unit === "T") return value * 1000;
+          return null;
+        }
+
+        function isRemoteModel(model) {
+          return Boolean(model && (model.remote_host || model.remote_model));
+        }
+
+        function isGemmaModel(model) {
+          const name = String(model?.name || model?.model || "").toLowerCase();
+          if (name.includes("gemma")) return true;
+          const families = model?.details?.families;
+          if (!Array.isArray(families)) return false;
+          return families.some((f) => String(f).toLowerCase().includes("gemma"));
+        }
+
+        function isQ4Model(model) {
+          const q = model?.details?.quantization_level;
+          return typeof q === "string" && q.toUpperCase().includes("Q4");
+        }
+
+        function modelSize(model) {
+          return typeof model?.size === "number" ? model.size : Number.POSITIVE_INFINITY;
+        }
+
+        async function fetchJSON(path, init) {
+          const url = `${state.endpoint}${path}`;
+          const res = await fetch(url, { cache: "no-store", ...init });
+          const text = await res.text();
+          let json = null;
+          try {
+            json = JSON.parse(text);
+          } catch {
+            // ignore
+          }
+          if (!res.ok) {
+            const msg = (json && json.error) || text || `HTTP ${res.status}`;
+            throw new Error(msg);
+          }
+          return json ?? {};
+        }
+
+        async function listOllamaModels() {
+          const json = await fetchJSON("/api/tags");
+          return Array.isArray(json.models) ? json.models : [];
+        }
+
+        function chooseCandidateModels(models) {
+          const local = models.filter((m) => !isRemoteModel(m));
+          const gemma = local.filter(isGemmaModel);
+          const gemmaQ4 = gemma.filter(isQ4Model);
+
+          const pool = gemmaQ4.length ? gemmaQ4 : gemma.length ? gemma : local;
+          return pool.slice().sort((a, b) => modelSize(a) - modelSize(b));
+        }
+
+        function prefer2BOrSmallest(candidates) {
+          if (!candidates.length) return null;
+          const twoB = candidates.filter((m) => {
+            const name = String(m?.name || "").toLowerCase();
+            if (/(^|[^0-9])2b([^0-9]|$)/i.test(name)) return true;
+            const ps = parseParamSizeB(m?.details?.parameter_size);
+            return ps != null && ps >= 1.5 && ps <= 2.6;
+          });
+          const pool = twoB.length ? twoB : candidates;
+          return pool[0] || null;
+        }
+
+        let modelPromise = null;
+        async function ensureModel() {
+          if (state.modelOverride) return state.modelOverride;
+          if (modelPromise) return modelPromise;
+
+          modelPromise = (async () => {
+            const cached = localStorage.getItem(STORAGE.autoModel);
+            if (cached) {
+              state.autoModelName = cached;
+              render();
+              return cached;
+            }
+
+            const models = await listOllamaModels();
+            const candidates = chooseCandidateModels(models);
+            const selected = prefer2BOrSmallest(candidates);
+            const name = selected?.name || selected?.model;
+            if (!name) throw new Error("No local models found. Run `ollama list` and install a model.");
+            localStorage.setItem(STORAGE.autoModel, name);
+            state.autoModelName = name;
+            render();
+            return name;
+          })();
+
+          return modelPromise;
+        }
+
+        async function ollamaChat({ system, user, temperature }) {
+          const model = await ensureModel();
+          const body = {
+            model,
+            stream: false,
+            options: {
+              num_ctx: state.options.numCtx,
+              num_predict: state.options.numPredict,
+              temperature
+            },
+            messages: [
+              { role: "system", content: system },
+              { role: "user", content: user }
+            ]
+          };
+
+          const json = await fetchJSON("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          });
+
+          const content = json?.message?.content ?? json?.response ?? "";
+          return { content: String(content).trim() || "(No content returned)", model };
+        }
+
+        async function runDebate(topic) {
+          const prompt = String(topic || "").trim();
+          if (!prompt) throw new Error("Enter a topic to debate.");
+
+          const agentX = await ollamaChat({
+            system: AGENT_X_SYSTEM,
+            user: `Debate topic: ${prompt}
+
+Return ONLY bullets.
+Write 3–5 bullets starting with "- Outcome: ".
+End with exactly one bullet starting with "- Question: " and include a "?".
+No markdown and never use **.
+If you include terminal commands, wrap them in backticks.
+Be bold, creative, and practical.`,
+            temperature: 0.8
+          });
+
+          const agentC = await ollamaChat({
+            system: AGENT_C_SYSTEM,
+            user: `Debate topic: ${prompt}
+
+Return ONLY bullets.
+Write 3–5 bullets starting with "- Outcome: ".
+End with exactly one bullet starting with "- Question: " and include a "?".
+No markdown and never use **.
+If you include terminal commands, wrap them in backticks.
+Be skeptical and systematic.`,
+            temperature: 0.2
+          });
+
+          return {
+            topic: prompt,
+            model: agentX.model,
+            agentX: normalizeBullets(agentX.content),
+            agentC: normalizeBullets(agentC.content)
+          };
+        }
+
+        async function runLoop() {
+          const last = state.rounds[state.rounds.length - 1];
+          if (!last) throw new Error("Start a debate first.");
+
+          const contextParts = [`Topic: ${last.topic}`];
+
+          if (state.autoContext) {
+            const transcript = state.rounds
+              .map((r, idx) => {
+                const n = idx + 1;
+                return `Round ${n}\nAgent X:\n${clip(r.agentX, 800)}\n\nAgent C:\n${clip(r.agentC, 800)}`;
+              })
+              .join("\n\n");
+
+            contextParts.push("Conversation so far:", transcript);
+          } else {
+            contextParts.push(
+              `Agent X previous:\n${clip(last.agentX, 1200)}`,
+              `Agent C previous:\n${clip(last.agentC, 1200)}`
+            );
+          }
+
+          contextParts.push(
+            "Continue the debate for one more round.",
+            "Return ONLY bullets.",
+            'Write 3–5 bullets starting with "- Outcome: ".',
+            'End with exactly one bullet starting with "- Question: " and include a "?".',
+            "No markdown and never use **.",
+            "If you include terminal commands, wrap them in backticks."
+          );
+
+          const context = contextParts.join("\n\n");
+
+          const agentX = await ollamaChat({ system: AGENT_X_SYSTEM, user: context, temperature: 0.8 });
+          const agentC = await ollamaChat({ system: AGENT_C_SYSTEM, user: context, temperature: 0.2 });
+
+          return {
+            topic: last.topic,
+            model: agentX.model,
+            agentX: normalizeBullets(agentX.content),
+            agentC: normalizeBullets(agentC.content)
+          };
+        }
+
+        function isNearBottom(container) {
+          const threshold = 72;
+          return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+        }
+
+        function scrollConversationToBottom(smooth) {
+          const container = el("conversation");
+          const top = Math.max(0, container.scrollHeight - container.clientHeight);
+          try {
+            container.scrollTo({ top, behavior: smooth ? "smooth" : "auto" });
+          } catch {
+            container.scrollTop = top;
+          }
+
+          const last = container.lastElementChild;
+          if (last) {
+            try {
+              last.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "end" });
+            } catch {
+              // ignore
+            }
+          }
+        }
+
+        function render() {
+          el("endpointCode").textContent = state.endpoint || "local";
+          el("modelCode").textContent = state.modelOverride ? state.modelOverride : state.autoModelName || "auto";
+
+          const autoContextBtn = el("autoContextBtn");
+          if (autoContextBtn) {
+            autoContextBtn.setAttribute("aria-pressed", state.autoContext ? "true" : "false");
+          }
+
+          el("nextRoundBtn").disabled = state.loading || state.rounds.length === 0;
+          el("resetBtn").disabled = state.loading || state.rounds.length === 0;
+          el("topicInput").disabled = state.loading;
+          updateComposerDisabled();
+
+          const container = el("conversation");
+          const wasNearBottom = isNearBottom(container);
+          const prevScrollTop = container.scrollTop;
+          const shouldAutoScroll = state.rounds.length !== state.lastRenderedCount || wasNearBottom;
+          container.innerHTML = "";
+
+          if (!state.rounds.length) {
+            const empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent = "Enter a topic below to start the debate.";
+            container.appendChild(empty);
+            state.lastRenderedCount = 0;
+            return;
+          }
+
+          for (let i = 0; i < state.rounds.length; i++) {
+            const round = state.rounds[i];
+            const roundNum = i + 1;
+
+            const roundEl = document.createElement("div");
+            roundEl.className = "round";
+
+            roundEl.innerHTML = `
+              <div class="round-meta">
+                <div class="left">
+                  <div class="kicker sf-thin">Round ${roundNum}</div>
+                  <div class="topic">${escapeHTML(round.topic)}</div>
+                </div>
+                <div class="right">
+                  <div>Model: ${escapeHTML(round.model || "unknown")}</div>
+                  <div>${escapeHTML(new Date(round.at).toLocaleString())}</div>
+                </div>
+              </div>
+              <div class="answers">
+                <div class="answer x">
+                  <div class="answer-head">
+                  <div class="name"><span class="sf-ultrathin">Agent</span><span class="sf-light">X</span></div>
+                  <div class="role">Creative Engineer</div>
+                </div>
+                  <pre>${renderAnswerHTML(round.agentX)}</pre>
+                </div>
+                <div class="answer-vs" aria-hidden="true">
+                  <span class="sf-light">V</span><span class="sf-thin">s</span>
+                </div>
+                <div class="answer c">
+                  <div class="answer-head">
+                    <div class="name"><span class="sf-ultrathin">Agent</span><span class="sf-light">C</span></div>
+                    <div class="role">Logical Engineer</div>
+                  </div>
+                  <pre>${renderAnswerHTML(round.agentC)}</pre>
+                </div>
+              </div>
+            `;
+            container.appendChild(roundEl);
+          }
+
+          state.lastRenderedCount = state.rounds.length;
+          if (shouldAutoScroll) {
+            scrollConversationToBottom(true);
+            requestAnimationFrame(() => scrollConversationToBottom(false));
+            setTimeout(() => scrollConversationToBottom(false), 120);
+          } else {
+            container.scrollTop = prevScrollTop;
+          }
+        }
+
+        async function refreshHealth() {
+          try {
+            const json = await fetchJSON("/health");
+            const ok = Boolean(json && json.ok);
+            const contextLabel = state.autoContext ? "Auto context" : "Manual context";
+            el("healthDot").style.background = ok ? "#22c55e" : "#f97316";
+            el("healthDot").style.boxShadow = ok
+              ? "0 0 0 4px rgba(34, 197, 94, 0.12)"
+              : "0 0 0 4px rgba(249, 115, 22, 0.14)";
+            el("healthText").textContent = ok ? "Local" : "Issue";
+            const epLabel = state.endpoint || "local";
+            el("subhead").textContent = ok
+              ? `Ollama OK • ${contextLabel} • ${epLabel}`
+              : `Ollama issue • ${contextLabel} • ${epLabel}`;
+          } catch {
+            const contextLabel = state.autoContext ? "Auto context" : "Manual context";
+            const epLabel = state.endpoint || "local";
+            el("healthDot").style.background = "#ef4444";
+            el("healthDot").style.boxShadow = "0 0 0 4px rgba(239, 68, 68, 0.14)";
+            el("healthText").textContent = "Down";
+            el("subhead").textContent = `Ollama unreachable • ${contextLabel} • ${epLabel}`;
+          }
+        }
+
+        function autosizeTextarea() {
+          const ta = el("topicInput");
+          ta.style.height = "auto";
+          ta.style.height = Math.min(ta.scrollHeight, 120) + "px";
+          updateComposerDisabled();
+        }
+
+        function updateComposerDisabled() {
+          const topic = el("topicInput")?.value?.trim() ?? "";
+          el("startBtn").disabled = state.loading || !topic;
+        }
+
+        function loadOptions() {
+          try {
+            const raw = localStorage.getItem(STORAGE.options);
+            if (!raw) return;
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === "object") {
+              state.options = {
+                numCtx: Number(parsed.numCtx) || DEFAULT_OPTIONS.numCtx,
+                numPredict: Number(parsed.numPredict) || DEFAULT_OPTIONS.numPredict
+              };
+            }
+          } catch {
+            // ignore
+          }
+        }
+
+        function loadHistory() {
+          try {
+            const raw = localStorage.getItem(STORAGE.debate);
+            if (!raw) return;
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) {
+              state.rounds = parsed.filter((r) => r && typeof r === "object").slice(-MAX_ROUNDS);
+            }
+          } catch {
+            // ignore
+          }
+        }
+
+        function saveHistory() {
+          try {
+            localStorage.setItem(STORAGE.debate, JSON.stringify(state.rounds.slice(-MAX_ROUNDS)));
+          } catch {
+            // ignore
+          }
+        }
+
+        function openSettings() {
+          el("endpointInput").value = state.endpoint;
+          el("modelInput").value = state.modelOverride;
+          el("onlineUrlInput").value = state.onlineUrl || DEFAULT_ONLINE_URL;
+          el("numCtxInput").value = String(state.options.numCtx);
+          el("numPredictInput").value = String(state.options.numPredict);
+          el("settingsModal").showModal();
+        }
+
+        function closeSettings() {
+          el("settingsModal").close();
+        }
+
+        function openOnline() {
+          const raw = (state.onlineUrl || DEFAULT_ONLINE_URL).trim();
+          if (!raw) {
+            setStatusRight("Set an online URL in Settings.", true);
+            return;
+          }
+
+          const url = /^https?:\\/\\//i.test(raw) ? raw : `https://${raw}`;
+          try {
+            window.open(url, "_blank", "noopener,noreferrer");
+          } catch {
+            window.location.href = url;
+          }
+        }
+
+        async function refreshModels() {
+          setStatusRight("Loading models…");
+          try {
+            const models = await listOllamaModels();
+            const select = el("modelsSelect");
+            select.innerHTML = "";
+            const placeholder = document.createElement("option");
+            placeholder.value = "";
+            placeholder.textContent = `(found ${models.length})`;
+            select.appendChild(placeholder);
+
+            for (const m of models.slice(0, 50)) {
+              const name = String(m?.name || m?.model || "").trim();
+              if (!name) continue;
+              const opt = document.createElement("option");
+              opt.value = name;
+              opt.textContent = name;
+              select.appendChild(opt);
+            }
+
+            setStatusRight(models.length ? "Models loaded." : "No models found.", !models.length);
+          } catch (err) {
+            setStatusRight(String(err?.message || err), true);
+          }
+        }
+
+        async function startDebateFromUI() {
+          const topic = el("topicInput").value.trim();
+          if (!topic) return;
+
+          state.loading = true;
+          setStatusRight("Running…");
+          render();
+
+          try {
+            const first = await runDebate(topic);
+            state.rounds = [
+              {
+                topic: first.topic,
+                model: first.model,
+                agentX: first.agentX,
+                agentC: first.agentC,
+                at: Date.now()
+              }
+            ];
+            saveHistory();
+            setStatusRight("");
+          } catch (err) {
+            setStatusRight(String(err?.message || err), true);
+          } finally {
+            state.loading = false;
+            render();
+          }
+        }
+
+        async function nextRound() {
+          state.loading = true;
+          setStatusRight("Continuing…");
+          render();
+
+          try {
+            const next = await runLoop();
+            state.rounds.push({
+              topic: next.topic,
+              model: next.model,
+              agentX: next.agentX,
+              agentC: next.agentC,
+              at: Date.now()
+            });
+            if (state.rounds.length > MAX_ROUNDS) {
+              state.rounds = state.rounds.slice(-MAX_ROUNDS);
+            }
+            saveHistory();
+            setStatusRight("");
+          } catch (err) {
+            setStatusRight(String(err?.message || err), true);
+          } finally {
+            state.loading = false;
+            render();
+          }
+        }
+
+        function resetDebate() {
+          state.rounds = [];
+          saveHistory();
+          setStatusRight("");
+          render();
+        }
+
+        function wire() {
+          loadOptions();
+          loadHistory();
+          render();
+          refreshHealth();
+
+          el("onlineBtn").addEventListener("click", openOnline);
+          el("topicInput").addEventListener("input", autosizeTextarea);
+          el("topicInput").addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              startDebateFromUI();
+            }
+          });
+
+          document.querySelectorAll("[data-topic]").forEach((button) => {
+            button.addEventListener("click", () => {
+              if (state.loading) return;
+              const topic = button.getAttribute("data-topic");
+              if (!topic) return;
+              el("topicInput").value = topic;
+              autosizeTextarea();
+              startDebateFromUI();
+            });
+          });
+
+          el("topicForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            startDebateFromUI();
+          });
+
+          el("nextRoundBtn").addEventListener("click", nextRound);
+          el("resetBtn").addEventListener("click", resetDebate);
+
+          el("autoContextBtn").addEventListener("click", () => {
+            state.autoContext = !state.autoContext;
+            localStorage.setItem(STORAGE.autoContext, state.autoContext ? "true" : "false");
+            render();
+            refreshHealth();
+          });
+
+          el("settingsBtn").addEventListener("click", openSettings);
+          el("closeSettingsBtn").addEventListener("click", closeSettings);
+
+          el("refreshModelsBtn").addEventListener("click", refreshModels);
+          el("modelsSelect").addEventListener("change", () => {
+            const selected = el("modelsSelect").value;
+            if (selected) el("modelInput").value = selected;
+          });
+
+          el("testBtn").addEventListener("click", async () => {
+            setStatusRight("Testing…");
+            try {
+              const raw = el("endpointInput").value.trim().replace(/\/+$/, "");
+              const testUrl = raw || "";
+              const res = await fetch(`${testUrl}/health`, { cache: "no-store" });
+              const text = await res.text();
+              if (!res.ok) throw new Error(text || `HTTP ${res.status}`);
+              setStatusRight("Connection OK.");
+            } catch (err) {
+              setStatusRight(String(err?.message || err), true);
+            }
+          });
+
+          el("saveBtn").addEventListener("click", async () => {
+            const endpoint = el("endpointInput").value.trim().replace(/\/+$/, "");
+            if (endpoint && /:11434$/.test(endpoint)) {
+              setStatusRight("Leave the endpoint blank (recommended) or use a proxy (e.g. http://localhost:3030). Browsers can’t call :11434 directly (CORS).", true);
+              el("endpointInput").focus();
+              return;
+            }
+            const modelOverride = el("modelInput").value.trim();
+            const onlineUrl = el("onlineUrlInput").value.trim();
+            const numCtx = Number(el("numCtxInput").value) || DEFAULT_OPTIONS.numCtx;
+            const numPredict = Number(el("numPredictInput").value) || DEFAULT_OPTIONS.numPredict;
+
+            state.endpoint = endpoint || DEFAULT_ENDPOINT;
+            state.modelOverride = modelOverride;
+            state.options = { numCtx, numPredict };
+            state.onlineUrl = onlineUrl || DEFAULT_ONLINE_URL;
+
+            localStorage.setItem(STORAGE.endpoint, state.endpoint);
+            localStorage.setItem(STORAGE.modelOverride, state.modelOverride);
+            localStorage.setItem(STORAGE.options, JSON.stringify(state.options));
+            localStorage.setItem(STORAGE.onlineUrl, state.onlineUrl);
+
+            modelPromise = null;
+            if (state.modelOverride) {
+              state.autoModelName = null;
+            } else {
+              state.autoModelName = null;
+              localStorage.removeItem(STORAGE.autoModel);
+            }
+
+            await refreshHealth();
+            render();
+            closeSettings();
+          });
+
+          el("settingsModal").addEventListener("close", () => setStatusRight(""));
+        }
+
+        wire();
+      })();
+    </script>
+  </body>
+</html>

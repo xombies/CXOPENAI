@@ -265,6 +265,16 @@
         color: rgb(153, 27, 27);
       }
 
+      .btn.icon {
+        padding: 8px 10px;
+        min-width: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        line-height: 1;
+      }
+
       main {
         padding: 26px 0 190px;
       }
@@ -928,6 +938,7 @@
             <span id="subhead">Connecting to Ollama…</span>
           </div>
           <div class="header-actions">
+            <button class="btn icon" id="refineBtn" type="button" disabled title="Refine (AgentX ↔ AgentC)">🔁</button>
             <button class="btn" id="nextRoundBtn" type="button" disabled>Next Round</button>
             <button class="btn danger" id="resetBtn" type="button" disabled>Reset</button>
           </div>
@@ -1373,6 +1384,59 @@ When there is prior conversation, refine at least one point from the previous ro
           };
         }
 
+        async function runRefineLoop() {
+          const last = state.rounds[state.rounds.length - 1];
+          if (!last) throw new Error("Start a debate first.");
+
+          const contextParts = [`MK latest message: ${last.topic}`];
+
+          if (state.autoContext) {
+            const recent = state.rounds.slice(-MAX_CONTEXT_ROUNDS);
+            const offset = state.rounds.length - recent.length;
+            const transcript = recent
+              .map((r, idx) => {
+                const n = offset + idx + 1;
+                return `Round ${n}\nMK: ${clip(r.topic, 420)}\nAgent X:\n${clip(r.agentX, 900)}\n\nAgent C:\n${clip(r.agentC, 900)}`;
+              })
+              .join("\n\n");
+            contextParts.push("Conversation so far:", transcript);
+          } else {
+            contextParts.push(
+              `Previous MK message:\n${clip(last.topic, 900)}`,
+              `Agent X previous:\n${clip(last.agentX, 1200)}`,
+              `Agent C previous:\n${clip(last.agentC, 1200)}`
+            );
+          }
+
+          contextParts.push(
+            "This is a refinement loop. AgentC responds to AgentX’s last message, and AgentX responds to AgentC’s last message.",
+            "Refine at least one point from the other agent’s last message (tighter wording, more specific) and add at least one new improvement not previously mentioned.",
+            "Keep it tightly tailored to MK and avoid repetition."
+          );
+
+          const baseContext = contextParts.join("\n\n");
+
+          const [agentX, agentC] = await Promise.all([
+            ollamaChat({
+              system: AGENT_X_SYSTEM,
+              user: `${baseContext}\n\nAgent C last message:\n${clip(last.agentC, 2200)}\n\nRespond to Agent C while addressing MK.`,
+              temperature: 0.8
+            }),
+            ollamaChat({
+              system: AGENT_C_SYSTEM,
+              user: `${baseContext}\n\nAgent X last message:\n${clip(last.agentX, 2200)}\n\nRespond to Agent X while addressing MK.`,
+              temperature: 0.2
+            })
+          ]);
+
+          return {
+            topic: last.topic,
+            model: agentX.model,
+            agentX: normalizeOutput(agentX.content),
+            agentC: normalizeOutput(agentC.content)
+          };
+        }
+
         function isNearBottom(container) {
           const threshold = 72;
           const canScroll = container.scrollHeight - container.clientHeight > 2;
@@ -1417,6 +1481,7 @@ When there is prior conversation, refine at least one point from the previous ro
           }
 
           el("nextRoundBtn").disabled = state.loading || state.rounds.length === 0;
+          el("refineBtn").disabled = state.loading || state.rounds.length === 0;
           el("resetBtn").disabled = state.loading || state.rounds.length === 0;
           el("topicInput").disabled = state.loading;
           updateComposerDisabled();
@@ -1683,6 +1748,30 @@ When there is prior conversation, refine at least one point from the previous ro
           }
         }
 
+        async function refineRound() {
+          state.loading = true;
+          setStatusRight("Refining…");
+          render();
+
+          try {
+            const next = await runRefineLoop();
+            state.rounds.push({
+              topic: next.topic,
+              model: next.model,
+              agentX: next.agentX,
+              agentC: next.agentC,
+              at: Date.now()
+            });
+            saveHistory();
+            setStatusRight("");
+          } catch (err) {
+            setStatusRight(String(err?.message || err), true);
+          } finally {
+            state.loading = false;
+            render();
+          }
+        }
+
         function resetDebate() {
           state.rounds = [];
           saveHistory();
@@ -1723,6 +1812,7 @@ When there is prior conversation, refine at least one point from the previous ro
           });
 
           el("nextRoundBtn").addEventListener("click", nextRound);
+          el("refineBtn").addEventListener("click", refineRound);
           el("resetBtn").addEventListener("click", resetDebate);
 
           el("autoContextBtn").addEventListener("click", () => {

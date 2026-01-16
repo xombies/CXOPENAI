@@ -1338,29 +1338,52 @@
           const prompt = String(topic || "").trim();
           if (!prompt) throw new Error("Enter a topic to debate.");
 
+          const contextParts = [];
+          if (state.rounds.length) {
+            const recent = state.rounds.slice(-12);
+            const offset = state.rounds.length - recent.length;
+            const transcript = recent
+              .map((r, idx) => {
+                const n = offset + idx + 1;
+                return `Round ${n}\nUser: ${clip(r.topic, 420)}\nAgent X:\n${clip(r.agentX, 900)}\n\nAgent C:\n${clip(r.agentC, 900)}`;
+              })
+              .join("\n\n");
+
+            if (state.autoContext) {
+              contextParts.push("Conversation so far:", transcript);
+            } else {
+              const last = recent[recent.length - 1];
+              contextParts.push(
+                `Previous user:\n${clip(last.topic, 900)}`,
+                `Agent X previous:\n${clip(last.agentX, 1200)}`,
+                `Agent C previous:\n${clip(last.agentC, 1200)}`
+              );
+            }
+
+            contextParts.push(`New user message: ${prompt}`);
+          } else {
+            contextParts.push(`Debate topic: ${prompt}`);
+          }
+
+          contextParts.push(
+            "Return ONLY bullets.",
+            'Write 3–5 bullets starting with "- Outcome: ".',
+            'End with exactly one bullet starting with "- Question: " and include a "?".',
+            "No markdown and never use **.",
+            "If you include terminal commands, wrap them in backticks."
+          );
+
+          const userContext = contextParts.join("\n\n");
+
           const agentX = await ollamaChat({
             system: AGENT_X_SYSTEM,
-            user: `Debate topic: ${prompt}
-
-Return ONLY bullets.
-Write 3–5 bullets starting with "- Outcome: ".
-End with exactly one bullet starting with "- Question: " and include a "?".
-No markdown and never use **.
-If you include terminal commands, wrap them in backticks.
-Be bold, creative, and practical.`,
+            user: `${userContext}\n\nBe bold, creative, and practical.`,
             temperature: 0.8
           });
 
           const agentC = await ollamaChat({
             system: AGENT_C_SYSTEM,
-            user: `Debate topic: ${prompt}
-
-Return ONLY bullets.
-Write 3–5 bullets starting with "- Outcome: ".
-End with exactly one bullet starting with "- Question: " and include a "?".
-No markdown and never use **.
-If you include terminal commands, wrap them in backticks.
-Be skeptical and systematic.`,
+            user: `${userContext}\n\nBe skeptical and systematic.`,
             temperature: 0.2
           });
 
@@ -1376,26 +1399,27 @@ Be skeptical and systematic.`,
           const last = state.rounds[state.rounds.length - 1];
           if (!last) throw new Error("Start a debate first.");
 
-          const contextParts = [`Topic: ${last.topic}`];
+          const contextParts = [`Latest user message: ${last.topic}`];
 
           if (state.autoContext) {
             const transcript = state.rounds
               .map((r, idx) => {
                 const n = idx + 1;
-                return `Round ${n}\nAgent X:\n${clip(r.agentX, 800)}\n\nAgent C:\n${clip(r.agentC, 800)}`;
+                return `Round ${n}\nUser: ${clip(r.topic, 420)}\nAgent X:\n${clip(r.agentX, 900)}\n\nAgent C:\n${clip(r.agentC, 900)}`;
               })
               .join("\n\n");
 
             contextParts.push("Conversation so far:", transcript);
           } else {
             contextParts.push(
+              `Previous user:\n${clip(last.topic, 900)}`,
               `Agent X previous:\n${clip(last.agentX, 1200)}`,
               `Agent C previous:\n${clip(last.agentC, 1200)}`
             );
           }
 
           contextParts.push(
-            "Continue the debate for one more round.",
+            "Continue the conversation for one more round.",
             "Return ONLY bullets.",
             'Write 3–5 bullets starting with "- Outcome: ".',
             'End with exactly one bullet starting with "- Question: " and include a "?".',
@@ -1653,15 +1677,16 @@ Be skeptical and systematic.`,
 
           try {
             const first = await runDebate(topic);
-            state.rounds = [
-              {
-                topic: first.topic,
-                model: first.model,
-                agentX: first.agentX,
-                agentC: first.agentC,
-                at: Date.now()
-              }
-            ];
+            state.rounds.push({
+              topic: first.topic,
+              model: first.model,
+              agentX: first.agentX,
+              agentC: first.agentC,
+              at: Date.now()
+            });
+            if (state.rounds.length > MAX_ROUNDS) {
+              state.rounds = state.rounds.slice(-MAX_ROUNDS);
+            }
             saveHistory();
             setStatusRight("");
           } catch (err) {
